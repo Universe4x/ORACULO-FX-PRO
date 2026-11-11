@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080a0e"><title>ORÁCULO FX PRO</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<header class="top">
+ <div class="brand"><div class="dragon">◈</div><div><h1>ORÁCULO <i>FX PRO</i></h1><small>ANALIZA · PREDICE · OPERA</small></div></div>
+ <div class="connection"><span class="dot"></span><b id="mt5state">MT5 sin conectar</b><small id="mt5detail">Conector VPS pendiente</small></div>
+ <button class="gear" data-tab="settings">⚙</button>
+</header>
+<nav id="tabs"><button class="active" data-tab="home">⌂<small>Inicio</small></button><button data-tab="markets">▥<small>Mercados</small></button><button data-tab="signals">◎<small>Predicciones</small></button><button data-tab="news">▤<small>Noticias</small></button><button data-tab="account">⇄<small>Mi MT5</small></button></nav>
+<main>
+<section id="home" class="page active">
+ <div class="sectionhead"><div><span class="eyebrow">MERCADO PRINCIPAL</span><h2>XAU/USD <span class="muted">· Oro spot</span></h2></div><button class="refresh" id="refresh">↻ Actualizar</button></div>
+ <article class="hero card">
+  <div class="herohead"><div><span class="muted">Último precio disponible</span><div class="price" id="price">—</div><span class="muted" id="priceMeta">Esperando datos de mercado</span></div><div class="signal neutral" id="signal">ANALIZANDO</div></div>
+  <div class="targets"><div><small>TP1</small><b id="tp1">—</b></div><div><small>TP2</small><b id="tp2">—</b></div><div><small>TP3</small><b id="tp3">—</b></div><div class="stop"><small>STOP / INVALIDACIÓN</small><b id="sl">—</b></div></div>
+  <div class="meterline"><span>Confianza del modelo</span><b id="confidence">—</b></div><div class="meter"><i id="meter"></i></div>
+  <div class="note" id="caveat">La confianza se calibrará con histórico validado. No representa una probabilidad garantizada.</div>
+ </article>
+ <div class="grid2">
+  <article class="card"><div class="cardtitle">ANÁLISIS MULTITEMPORAL</div><div id="timeframes" class="tfrows"><p class="muted">Cargando análisis…</p></div></article>
+  <article class="card"><div class="cardtitle">FACTORES TÉCNICOS</div><div id="factors" class="factorlist"><p class="muted">Esperando datos…</p></div></article>
+ </div>
+ <article class="card"><div class="cardtitle">CONCLUSIÓN DEL ORÁCULO</div><p id="summary" class="summary">El motor analizará tendencia, momentum, volatilidad y estructura cuando haya datos disponibles.</p></article>
+ <div class="grid2">
+  <article class="card"><div class="cardtitle">NOTICIAS Y EVENTOS</div><p class="muted">Fuentes externas; el impacto requiere calendario/API autorizado.</p><div class="links"><a href="https://www.investing.com/" target="_blank">Investing.com ↗</a><a href="https://www.fxstreet.com/news" target="_blank">FXStreet ↗</a><a href="https://www.reuters.com/markets/" target="_blank">Reuters ↗</a><a href="https://tradingeconomics.com/calendar" target="_blank">Trading Economics ↗</a></div></article>
+  <article class="card"><div class="cardtitle">GESTIÓN DE RIESGO</div><label>Riesgo por operación</label><select id="risk"><option value="0.25">0,25%</option><option value="0.5" selected>0,50%</option><option value="1">1,00%</option></select><label class="toggle"><span>Operativa automática</span><input id="auto" type="checkbox" disabled><em>Requiere conector y servidor</em></label></article>
+ </div>
+ <div class="actions"><button id="reanalyze" class="primary">⟳ Analizar de nuevo</button><button data-tab="signals" class="secondary">Ver predicciones</button></div>
+</section>
+<section id="markets" class="page"><div class="sectionhead"><div><span class="eyebrow">SEGUIMIENTO</span><h2>Mercados</h2></div></div><div id="marketlist"></div></section>
+<section id="signals" class="page"><span class="eyebrow">MOTOR PREDICTIVO</span><h2>Predicciones por temporalidad</h2><p class="muted">Cada lectura incluye dirección, objetivos ATR e invalidación técnica. Los objetivos son escenarios calculados, no promesas.</p><div id="signalcards"></div></section>
+<section id="news" class="page"><span class="eyebrow">CONTEXTO FUNDAMENTAL</span><h2>Noticias y calendario</h2><p class="muted">Acceso a fuentes públicas. Para integrar titulares dentro de la app y clasificar su impacto se necesita un proveedor/API con permisos de uso.</p><div class="card links"><a href="https://www.investing.com/economic-calendar/" target="_blank">Calendario económico Investing.com ↗</a><a href="https://www.fxstreet.com/economic-calendar" target="_blank">Calendario FXStreet ↗</a><a href="https://www.reuters.com/markets/" target="_blank">Reuters Markets ↗</a><a href="https://tradingeconomics.com/calendar" target="_blank">Trading Economics ↗</a></div></section>
+<section id="account" class="page"><span class="eyebrow">CUENTA Y EJECUCIÓN</span><h2>Mi MetaTrader 5</h2><div class="card"><div class="statusrow"><span class="dot off"></span><b>Conector no vinculado</b></div><p class="muted">La APK no puede enviar órdenes directamente a la app móvil MT5. La conexión prevista utiliza un EA instalado en MT5 de escritorio/VPS y un servidor seguro que autentica al cliente.</p><div class="kv"><span>Cuenta</span><b>—</b><span>Balance</span><b>—</b><span>Equity</span><b>—</b><span>Operaciones abiertas</span><b>—</b></div><button class="secondary full" data-tab="settings">Configurar conexión</button></div><div class="card"><b>Protecciones obligatorias</b><ul><li>Riesgo máximo por operación y por día.</li><li>Stop Loss obligatorio y límite de exposición.</li><li>Botón de parada de emergencia.</li><li>Modo demo antes de habilitar dinero real.</li></ul></div></section>
+<section id="settings" class="page"><span class="eyebrow">CONFIGURACIÓN</span><h2>Conexión y datos</h2><div class="card"><label>URL del servidor ORÁCULO</label><input id="server" placeholder="https://tu-servidor-seguro.example"><label>Código de vinculación</label><input id="paircode" placeholder="Código entregado por el servidor"><button class="primary full" id="saveconfig">Guardar configuración</button><p id="configmsg" class="muted">La vinculación real se habilitará cuando esté desplegado el backend y firmado el conector MT5.</p></div><div class="card"><b>Fuentes de mercado</b><p class="muted">El prototipo intenta consultar datos públicos de Yahoo Finance. La disponibilidad, retraso y permisos pueden variar. Para producción se integrará un proveedor de datos estable con licencia.</p></div></section>
+</main>
+<footer>ORÁCULO FX PRO · Herramienta informativa. No es asesoramiento financiero. Los mercados implican riesgo de pérdida.</footer>
+<script src="app.js"></script></body></html>

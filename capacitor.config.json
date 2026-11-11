@@ -1,0 +1,8 @@
+{
+  "appId": "com.oraculofx.pro",
+  "appName": "OR\u00c1CULO FX PRO",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  }
+}

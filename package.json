@@ -1,0 +1,16 @@
+{
+  "name": "oraculo-fx-pro",
+  "version": "0.2.0",
+  "private": true,
+  "description": "OR\u00c1CULO FX PRO Android client",
+  "scripts": {
+    "build": "echo 'Static Capacitor app'"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.0.0",
+    "@capacitor/core": "^7.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.0.0"
+  }
+}
