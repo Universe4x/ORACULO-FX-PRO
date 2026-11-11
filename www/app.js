@@ -27,3 +27,50 @@ $("refresh").onclick=refresh;$("reanalyze").onclick=refresh;
 function marketList(){let box=$("marketlist");box.replaceChildren(...assets.map(a=>{let d=document.createElement("button");d.className="market";d.style.width="100%";d.style.color="inherit";d.innerHTML=`<span><b>${a[0]}</b><small class=muted>Ver análisis multitemporal</small></span><b>›</b>`;d.onclick=()=>{nav("home");analyzeAsset(a).catch(e=>setText("summary",e.message))};return d}))}
 marketList();refresh();setInterval(refresh,120000);
 $("saveconfig").onclick=()=>{let u=$("server").value.trim();if(u&&!/^https:\/\//i.test(u)){setText("configmsg","Por seguridad, el servidor debe usar HTTPS.");return}setText("configmsg","Configuración guardada localmente como borrador. La autenticación y el enlace real se activarán al desplegar el backend seguro.");};
+
+// ORACULO FX PRO - MT5 local bridge (read-only)
+const bridgeConfigKey="oraculo_mt5_bridge_v1";
+let bridgeTimer=null;
+function loadBridgeConfig(){try{return JSON.parse(localStorage.getItem(bridgeConfigKey)||"{}")}catch(_){return {}}}
+function saveBridgeConfig(){
+ const base=$("server").value.trim().replace(/\/$/,"");
+ const token=$("paircode").value.trim();
+ if(!/^http:\/\/([\d.]+|localhost)(:\d+)?$/i.test(base)){$("configmsg").textContent="Introduce la URL local del PC, por ejemplo http://192.168.1.25:8765";return}
+ if(token.length<20){$("configmsg").textContent="El token parece incompleto. Copia el token completo de la ventana del puente.";return}
+ localStorage.setItem(bridgeConfigKey,JSON.stringify({base,token}));
+ $("configmsg").textContent="Configuración guardada. Comprobando conexión MT5…";
+ pollBridge();
+}
+function bridgeStatus(connected,detail){
+ const state=$("mt5state"),small=$("mt5detail"),dot=document.querySelector(".connection .dot"),adot=$("accountdot");
+ state.textContent=connected?"MT5 conectado":"MT5 sin conectar"; small.textContent=detail||"Puente local";
+ if(dot)dot.style.background=connected?"#43d18a":"#e06b6b";
+ if(adot)adot.style.background=connected?"#43d18a":"#e06b6b";
+ $("accountstate").textContent=connected?"Conectado · solo lectura":"Conector no vinculado";
+}
+async function pollBridge(){
+ const cfg=loadBridgeConfig(); if(!cfg.base||!cfg.token){bridgeStatus(false,"Configura el puente local");return}
+ try{
+  const res=await fetch(cfg.base+"/api/state",{headers:{"X-ORACULO-TOKEN":cfg.token},cache:"no-store"});
+  if(!res.ok)throw Error(res.status===401?"Token incorrecto":"Puente no disponible (HTTP "+res.status+")");
+  const j=await res.json();
+  if(!j.connected||!j.data)throw Error("Esperando datos de MT5");
+  const d=j.data,age=Math.max(0,Math.round(Date.now()/1000-j.received_at));
+  bridgeStatus(true,d.symbol+" · recibido hace "+age+" s");
+  $("accsymbol").textContent=d.symbol||"—";
+  $("accquote").textContent=fmt(d.bid,d.digits)+" / "+fmt(d.ask,d.digits);
+  $("accbalance").textContent=d.balance==null?"—":fmt(d.balance,2)+" "+(d.currency||"");
+  $("accequity").textContent=d.equity==null?"—":fmt(d.equity,2)+" "+(d.currency||"");
+  $("accprofit").textContent=d.profit==null?"—":fmt(d.profit,2)+" "+(d.currency||"");
+  $("accpositions").textContent=d.open_positions??"—";
+  if(/XAU|GOLD/i.test(d.symbol)&&currentAsset===assets[0]){
+    setText("price",fmt(d.bid,d.digits));
+    setText("priceMeta","Cotización MT5 · Bid · "+new Date(j.received_at*1000).toLocaleTimeString("es-ES"));
+  }
+  $("configmsg").textContent="Conexión correcta con "+d.symbol+". Solo lectura; no se envían órdenes.";
+ }catch(e){bridgeStatus(false,e.message);$("configmsg").textContent=e.message;}
+}
+const savedBridge=loadBridgeConfig();
+if(savedBridge.base){$("server").value=savedBridge.base;$("paircode").value=savedBridge.token;}
+$("saveconfig").onclick=saveBridgeConfig;
+pollBridge();bridgeTimer=setInterval(pollBridge,3000);

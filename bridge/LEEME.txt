@@ -1,0 +1,17 @@
+ORACULO FX PRO - PUENTE LOCAL MT5 (SOLO LECTURA)
+
+REQUISITOS: Windows 10/11, Python 3, MT5 de escritorio y móvil en la misma Wi-Fi.
+
+1) Ejecuta INICIAR_PUENTE.bat. Se crea bridge_token.txt y se muestra URL local + token.
+2) En MT5: Archivo > Abrir carpeta de datos > MQL5 > Experts. Copia ORACULO_FX_PRO_Connector_READONLY.mq5 allí.
+3) Abre MetaEditor, localiza el EA y compílalo con F7.
+4) En MT5: Herramientas > Opciones > Asesores Expertos. Marca permitir WebRequest y añade http://127.0.0.1:8765
+5) Arrastra el EA al gráfico XAUUSD (o símbolo exacto del bróker). Inputs:
+   BridgeURL = http://127.0.0.1:8765/mt5
+   AccessToken = token mostrado por el puente
+6) Activa Asesores Expertos. El EA es SOLO LECTURA: no abre, modifica ni cierra operaciones.
+7) En la APK, Configuración: URL = http://IP-LOCAL-DEL-PC:8765 y código = el mismo token.
+
+SEGURIDAD: PC y móvil en la misma Wi-Fi. Permite Python en Firewall solo en redes privadas.
+No abras puertos del router ni expongas el puente a Internet. No compartas el token.
+Este prototipo envía Bid/Ask, spread, símbolo y resumen básico de cuenta. No ejecuta operaciones.
